@@ -1,0 +1,10 @@
+local.properties
+.idea
+
+# Project exclude paths
+/.gradle/
+/build/
+/build/classes/
+/build/classes/kotlin/desktop/main/
+/build/classes/kotlin/macosX64/main/klib/
+/build/classes/kotlin/uikitX64/main/klib/
