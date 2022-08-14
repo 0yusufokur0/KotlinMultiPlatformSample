@@ -13,6 +13,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,11 +25,15 @@ class MainActivity : AppCompatActivity() {
         setContent {
 
 
-            viewModel.loadList()
+                viewModel.loadList()
 
             viewModel.list.observeStateless(
                 success = {
                     Text(it.toString())
+                }, loading ={
+                    Text("Loading")
+                }, error = {
+                    Text(it?.message.toString())
                 }
             )
         }

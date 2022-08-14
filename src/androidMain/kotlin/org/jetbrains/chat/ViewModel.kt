@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.chat.model.EmployeeResponse
 
 class ViewModel:BaseViewModel(){
@@ -37,7 +38,9 @@ class ViewModel:BaseViewModel(){
     ) = viewModelScope.launch {
         request()
             .onStart { loading() }
-            .catch { error(it) }
+            .catch {
+                error(it)
+            }
             .collect { success(it)}
 
     }

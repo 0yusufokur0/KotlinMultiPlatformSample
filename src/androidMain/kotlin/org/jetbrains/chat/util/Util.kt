@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import org.jetbrains.chat.model.EmployeeResponse
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -63,36 +62,21 @@ inline fun <reified T : Any, R> T.getPrivatePropertyOfKotlin(name: String): R? =
         ?.get(this) as R?
 
 
-/*@JvmName("getData1")
-inline fun <reified T> getData(crossinline request: suspend () -> HttpResponse ) : Flow<Resource<T>> =
-    flow { emit(getResourceByNetworkRequest{ request() } ) }
-
-suspend inline fun <reified T> getResourceByNetworkRequest(request: suspend () -> HttpResponse): Resource<T> {
-    try {
-        val response = request()
-        return Resource.Success(response.body<T>())
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return Resource.Error(e)
-    }
-    return Resource.Loading()
-}*/
-
 @JvmName("getData2")
-inline fun <reified T> startRequest(crossinline request: suspend () -> HttpResponse ) : Flow<Resource<T>> = flow {
-    try {
-        emit(Resource.Loading())
-        val response = request()
-         emit(Resource.Success(response.body<T>()))
-    } catch (e: Exception) {
-        e.printStackTrace()
-         emit(Resource.Error(e))
-    }
-}.flowOn(Dispatchers.IO)
+inline fun <reified T> startRequest(crossinline request: suspend () -> HttpResponse): Flow<Resource<T>> {
+    return flow {
+        emit(
+            value = try {
+                val response = request()
+                Resource.Success(response.body<T>())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Error(e)
+            }
+        )
+    }.flowOn(Dispatchers.IO)
 
-
-
-
+}
 
 
 
